@@ -21,7 +21,7 @@ public class OrderAggregatorTest {
 
     @Test
     public void testAggregateSellOrders() {
-        List<Order> orders = new ArrayList<>(4);
+        List<Order> orders = new ArrayList<>(3);
         orders.add(new Order("user1", 3.5, 306, OrderType.SELL));
         orders.add(new Order("user2", 1.2, 310, OrderType.SELL));
         orders.add(new Order("user3", 2.0, 306, OrderType.SELL));
@@ -37,7 +37,7 @@ public class OrderAggregatorTest {
 
     @Test
     public void testAggregateBuyOrders() {
-        List<Order> orders = new ArrayList<>(4);
+        List<Order> orders = new ArrayList<>(3);
 
         orders.add(new Order("user1", 3.5, 306, OrderType.BUY));
         orders.add(new Order("user2", 1.2, 310, OrderType.BUY));
