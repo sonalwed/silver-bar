@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.math.BigDecimal.valueOf;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 /**
@@ -36,28 +37,17 @@ public class OrderRegistryTest {
         this.testable.addOrder(ORDER_TWO);
 
         Collection<Order> result = this.testable.getAllLiveOrders();
-
-        assertEquals(2, result.size());
-
-        Set<Order> expected = new HashSet<>();
-        expected.add(ORDER_ONE);
-        expected.add(ORDER_TWO);
-        assertEquals(expected, new HashSet<>(result));
+        assertThat(result, containsInAnyOrder(ORDER_ONE, ORDER_TWO));
     }
 
     @Test
     public void testCancelOrder() {
         this.testable.addOrder(ORDER_ONE);
         this.testable.addOrder(ORDER_TWO);
-
         this.testable.cancelOrder(ORDER_ONE);
+
         Collection<Order> result = this.testable.getAllLiveOrders();
-
-        assertEquals(1, result.size());
-
-        Set<Order> expected = new HashSet<>();
-        expected.add(ORDER_TWO);
-        assertEquals(expected, new HashSet<>(result));
+        assertThat(result, containsInAnyOrder(ORDER_TWO));
     }
 
 }

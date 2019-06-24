@@ -43,7 +43,6 @@ public class OrderAggregatorTest {
     @Test
     public void testAggregateBuyOrders() {
         List<Order> orders = new ArrayList<>(3);
-
         orders.add(new Order("user1", valueOf(3.5), valueOf(306), OrderType.BUY));
         orders.add(new Order("user2", valueOf(1.2), valueOf(310), OrderType.BUY));
         orders.add(new Order("user3", valueOf(2.0), valueOf(306), OrderType.BUY));

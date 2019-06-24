@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class OrderRegistry {
 
-    private final List<Order> registry = new LinkedList<>(); // assuming add records happen more often than cancel record
+    private final List<Order> registry = new LinkedList<>(); // assumed add records happen more often than cancel records
 
     /**
      * Add new orders.
@@ -31,6 +31,6 @@ public class OrderRegistry {
     }
 
     public Collection<Order> getAllLiveOrders(){
-        return this.registry;
+        return Collections.unmodifiableList(this.registry); //stop external objects modifying the registry
     }
 }

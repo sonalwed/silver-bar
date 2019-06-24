@@ -48,7 +48,7 @@ public class OrderSummary {
 
     @Override
     public String toString() {
-        return String.format("%s kg order for £%s", quantity, pricePerkg.toString());
+        return String.format("%s kg order for £%s", quantity, pricePerkg);
     }
 
 }
