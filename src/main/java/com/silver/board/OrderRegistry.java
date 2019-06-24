@@ -2,10 +2,7 @@ package com.silver.board;
 
 import com.silver.board.model.Order;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.LongSupplier;
+import java.util.*;
 
 /**
  * Order registry.
@@ -14,34 +11,26 @@ import java.util.function.LongSupplier;
  */
 public class OrderRegistry {
 
-    private final LongSupplier orderIdSupper;
-    private final Map<Long, Order> registry = new HashMap<>();
-
-    public OrderRegistry(LongSupplier orderIdSupper) {
-        this.orderIdSupper = orderIdSupper;
-    }
+    private final List<Order> registry = new LinkedList<>(); // assuming add records happen more often than cancel record
 
     /**
      * Add new orders.
      *
      * @param order new order to add to the registry
-     * @return order id, which can be used to cancel the order
      */
-    public long addOrder(Order order){
-        long id = orderIdSupper.getAsLong();
-        this.registry.put(id, order);
-        return id;
+    public void addOrder(Order order){
+        this.registry.add(order);
     }
 
     /**
-     * Cancel order by order ID
-     * @param orderId order ID
+     * Cancel order
+     * @param order order to cancel
      */
-    public void cancelOrder(long orderId){
-        this.registry.remove(orderId);
+    public void cancelOrder(Order order){
+        this.registry.remove(order);
     }
 
     public Collection<Order> getAllLiveOrders(){
-        return this.registry.values();
+        return this.registry;
     }
 }

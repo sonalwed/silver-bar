@@ -3,7 +3,8 @@ package com.silver.board;
 import com.silver.board.model.Order;
 import com.silver.board.model.OrderType;
 
-import java.util.concurrent.atomic.AtomicLong;
+
+import static java.math.BigDecimal.valueOf;
 
 
 /**
@@ -14,29 +15,26 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Main {
 
     public static void main(String[] args) {
-        AtomicLong orderIdGenerator = new AtomicLong();
-
         OrderAggregator aggregator = new OrderAggregator();
-        OrderRegistry registry = new OrderRegistry(orderIdGenerator::incrementAndGet);
+        OrderRegistry registry = new OrderRegistry();
 
-        registry.addOrder(new Order("user1", 3.5, 306, OrderType.SELL));
-        registry.addOrder(new Order("user2", 1.2, 310, OrderType.SELL));
-        registry.addOrder(new Order("user3", 1.5, 307, OrderType.SELL));
-        registry.addOrder(new Order("user4", 2.0, 306, OrderType.SELL));
-        registry.addOrder(new Order("user5", 2.0, 306, OrderType.BUY));
-        registry.addOrder(new Order("user6", 3.0, 306, OrderType.BUY));
-        registry.addOrder(new Order("user7", 3.0, 336, OrderType.BUY));
+        registry.addOrder(new Order("user1", valueOf(3.5), valueOf(306), OrderType.SELL));
+        registry.addOrder(new Order("user2", valueOf(1.2), valueOf(310), OrderType.SELL));
+        registry.addOrder(new Order("user3", valueOf(1.5), valueOf(307), OrderType.SELL));
+        registry.addOrder(new Order("user4", valueOf(2.0), valueOf(306), OrderType.SELL));
+        registry.addOrder(new Order("user5", valueOf(2.0), valueOf(306), OrderType.BUY));
+        registry.addOrder(new Order("user6", valueOf(3.0), valueOf(306), OrderType.BUY));
+        registry.addOrder(new Order("user7", valueOf(3.0), valueOf(336), OrderType.BUY));
 
+        Order cancelOrder = new Order("user7", valueOf(4.0), valueOf(336), OrderType.BUY);
+        registry.addOrder(cancelOrder);
 
-        long cancelOrderId = registry.addOrder(new Order("user7", 3.0, 336, OrderType.BUY));
-
-        registry.cancelOrder(cancelOrderId);
+        registry.cancelOrder(cancelOrder);
 
         System.out.println("--- Sell Orders  ---");
         System.out.println(aggregator.aggregateSellOrders(registry.getAllLiveOrders()));
 
         System.out.println("--- Buy Orders  ---");
         System.out.println(aggregator.aggregateBuyOrders(registry.getAllLiveOrders()));
-
     }
 }

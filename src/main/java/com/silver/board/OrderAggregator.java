@@ -4,8 +4,10 @@ import com.silver.board.model.Order;
 import com.silver.board.model.OrderSummary;
 import com.silver.board.model.OrderType;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -28,27 +30,14 @@ public class OrderAggregator {
     }
 
     private List<OrderSummary> aggregate(Collection<Order> orders, Predicate<Order> predicate, Comparator<OrderSummary> comparator){
-        Map<Double, OrderSummary> result = new HashMap<>();
+        Collector<Order, ?, BigDecimal> sumQuantity = Collectors.reducing(BigDecimal.ZERO, Order::getQuantity ,BigDecimal::add);
 
-        for(Order order : orders) {
+        Map<BigDecimal, BigDecimal> priceToQuantityMap = orders.stream()
+                .filter(predicate)
+                .collect(Collectors.groupingBy(Order::getPricePerkg, sumQuantity));
 
-            if (!predicate.test(order)){
-                continue;
-            }
-
-            OrderSummary orderSummary = result.get(order.getPricePerkg());
-
-            if (orderSummary == null){
-                orderSummary = new OrderSummary(order.getPricePerkg(), order.getQuantity());
-            } else {
-                orderSummary = orderSummary.addQuatity(order.getQuantity());
-            }
-
-            result.put(order.getPricePerkg(), orderSummary);
-        }
-
-        return result.values()
-                .stream()
+        return priceToQuantityMap.entrySet().stream()
+                .map(entry -> new OrderSummary(entry.getKey(), entry.getValue()))
                 .sorted(comparator)
                 .collect(Collectors.toList());
     }

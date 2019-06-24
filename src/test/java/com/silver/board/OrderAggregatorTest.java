@@ -3,11 +3,13 @@ package com.silver.board;
 import com.silver.board.model.Order;
 import com.silver.board.model.OrderSummary;
 import com.silver.board.model.OrderType;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.math.BigDecimal.valueOf;
 import static org.junit.Assert.*;
 
 /**
@@ -17,38 +19,39 @@ import static org.junit.Assert.*;
  */
 public class OrderAggregatorTest {
 
-    private OrderAggregator testable = new OrderAggregator();
+    private OrderAggregator testable;
+
+    @Before
+    public void setUp() {
+        this.testable= new OrderAggregator();
+    }
 
     @Test
     public void testAggregateSellOrders() {
         List<Order> orders = new ArrayList<>(3);
-        orders.add(new Order("user1", 3.5, 306, OrderType.SELL));
-        orders.add(new Order("user2", 1.2, 310, OrderType.SELL));
-        orders.add(new Order("user3", 2.0, 306, OrderType.SELL));
+        orders.add(new Order("user1", valueOf(3.5), valueOf(306), OrderType.SELL));
+        orders.add(new Order("user2", valueOf(1.2), valueOf(310), OrderType.SELL));
+        orders.add(new Order("user3", valueOf(2.0), valueOf(306), OrderType.SELL));
 
         List<OrderSummary> result = this.testable.aggregateSellOrders(orders);
 
         assertEquals(2, result.size());
-        assertEquals(306, result.get(0).getPricePerkg(), 0.1);
-        assertEquals(5.5, result.get(0).getQuantity(), 0.01);
-        assertEquals(310, result.get(1).getPricePerkg(), 0.1);
-        assertEquals(1.2, result.get(1).getQuantity(), 0.01);
+        assertEquals(new OrderSummary(valueOf(306), valueOf(5.5)), result.get(0));
+        assertEquals(new OrderSummary(valueOf(310), valueOf(1.2)), result.get(1));
     }
 
     @Test
     public void testAggregateBuyOrders() {
         List<Order> orders = new ArrayList<>(3);
 
-        orders.add(new Order("user1", 3.5, 306, OrderType.BUY));
-        orders.add(new Order("user2", 1.2, 310, OrderType.BUY));
-        orders.add(new Order("user3", 2.0, 306, OrderType.BUY));
+        orders.add(new Order("user1", valueOf(3.5), valueOf(306), OrderType.BUY));
+        orders.add(new Order("user2", valueOf(1.2), valueOf(310), OrderType.BUY));
+        orders.add(new Order("user3", valueOf(2.0), valueOf(306), OrderType.BUY));
 
         List<OrderSummary> result = this.testable.aggregateBuyOrders(orders);
 
         assertEquals(2, result.size());
-        assertEquals(310, result.get(0).getPricePerkg(), 0.1);
-        assertEquals(1.2, result.get(0).getQuantity(), 0.01);
-        assertEquals(306, result.get(1).getPricePerkg(), 0.1);
-        assertEquals(5.5, result.get(1).getQuantity(), 0.01);
+        assertEquals(new OrderSummary(valueOf(310), valueOf(1.2)), result.get(0));
+        assertEquals(new OrderSummary(valueOf(306), valueOf(5.5)), result.get(1));
     }
 }

@@ -5,11 +5,13 @@ import com.silver.board.model.OrderType;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static java.math.BigDecimal.valueOf;
 import static org.junit.Assert.*;
 
 /**
@@ -18,26 +20,22 @@ import static org.junit.Assert.*;
  * Created by sonalw on 17/06/2019.
  */
 public class OrderRegistryTest {
-    private static final Order ORDER_ONE  = new Order("user1", 3.5, 306, OrderType.SELL);
-    private static final Order ORDER_TWO  = new Order("user1", 7.5, 306, OrderType.SELL);
+    private static final Order ORDER_ONE  = new Order("user1", valueOf(3.5), valueOf(306), OrderType.SELL);
+    private static final Order ORDER_TWO  = new Order("user1", valueOf(7.5), valueOf(306), OrderType.SELL);
 
     private OrderRegistry testable;
 
     @Before
     public void setUp() {
-        AtomicLong orderIdGenerator = new AtomicLong();
-        this.testable = new OrderRegistry(orderIdGenerator::incrementAndGet);
+        this.testable = new OrderRegistry();
     }
 
     @Test
     public void testAddOrderAnGetLiveOrder() {
-        long orderIdFirstOrder = this.testable.addOrder(ORDER_ONE);
-        long orderIdSecondOrder = this.testable.addOrder(ORDER_TWO);
+        this.testable.addOrder(ORDER_ONE);
+        this.testable.addOrder(ORDER_TWO);
 
         Collection<Order> result = this.testable.getAllLiveOrders();
-
-        assertEquals(1, orderIdFirstOrder);
-        assertEquals(2, orderIdSecondOrder);
 
         assertEquals(2, result.size());
 
@@ -48,11 +46,11 @@ public class OrderRegistryTest {
     }
 
     @Test
-    public void testCancelOrder() throws Exception {
-        long orderIdFirstOrder = this.testable.addOrder(ORDER_ONE);
+    public void testCancelOrder() {
+        this.testable.addOrder(ORDER_ONE);
         this.testable.addOrder(ORDER_TWO);
 
-        this.testable.cancelOrder(orderIdFirstOrder);
+        this.testable.cancelOrder(ORDER_ONE);
         Collection<Order> result = this.testable.getAllLiveOrders();
 
         assertEquals(1, result.size());
