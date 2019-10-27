@@ -1,4 +1,4 @@
 Please run com.silver.board.Main.class in src/main/java folder to see the output of the code.
 
-changing something in master
+changing master for the second time
 adding changes to the branch
